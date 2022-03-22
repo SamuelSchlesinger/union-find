@@ -4,10 +4,10 @@
 //! data structure](https://en.wikipedia.org/wiki/Disjoint-set_data_structure)
 //! of the same name.
 //!
-//! The interface to this data structure is composed of two functions. [`find`]
+//! The interface to this data structure is composed of two functions. [`UnionFind::find`]
 //! allows you to compute a canonical representative for a set, given an element
-//! of it. [`union`] allows you to combine two sets, given an arbitrary representative
-//! from each. In the future, if you were to [`find`] a canonical representative
+//! of it. [`UnionFind::union`] allows you to combine two sets, given an arbitrary representative
+//! from each. In the future, if you were to [`UnionFind::find`] a canonical representative
 //! from any member of either set, you will find them equal, indicating they are in
 //! the same set according to the data structure.
 //!
