@@ -14,13 +14,15 @@
 //! The interface can be used like this:
 //!
 //! ```
+//! use union_find::UnionFind;
+//!
 //! let mut uf = UnionFind::new(10);
 //!
 //! assert_eq!(uf.find(0).unwrap(), 0);
 //!
-//! let rep = uf.union(0, 1).unwrap();
+//! uf.union(0, 1);
 //!
-//! assert_eq!(rep, uf.find(1).unwrap());
+//! assert_eq!(uf.find(0).unwrap(), uf.find(1).unwrap());
 //! ```
 
 /// A [`UnionFind`] structure allows you to maintain items
@@ -96,27 +98,24 @@ impl UnionFind {
     }
 
     /// Cause the union of the sets which two elements belong to.
-    pub fn union(&mut self, element1: usize, element2: usize) -> Option<usize> {
+    pub fn union(&mut self, element1: usize, element2: usize) {
         if element1 >= self.backing.len() || element2 >= self.backing.len() {
-            None
+            return;
         } else {
             let rep1 = self.find(element1).unwrap();
             let rep2 = self.find(element2).unwrap();
 
             if rep1 == rep2 {
-                return Some(rep1);
+                return;
             }
 
             if self.backing[rep1].rank < self.backing[rep2].rank {
                 self.backing[rep1].parent = rep2;
-                Some(rep2)
             } else if self.backing[rep1].rank > self.backing[rep2].rank {
                 self.backing[rep2].parent = rep1;
-                Some(rep1)
             } else {
                 self.backing[rep1].parent = rep2;
                 self.backing[rep2].rank = self.backing[rep2].rank + 1;
-                Some(rep1)
             }
         }
     }
@@ -127,6 +126,13 @@ mod tests {
     const SIZE: usize = 10000;
 
     use super::*;
+
+    #[test]
+    fn union_two() {
+        let mut uf = UnionFind::new(SIZE);
+        uf.union(1, 2);
+        assert_eq!(uf.find(1).unwrap(), uf.find(2).unwrap());
+    }
 
     #[test]
     fn union_all() {

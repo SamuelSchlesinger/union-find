@@ -18,6 +18,5 @@ let mut uf = UnionFind::new(10);
 
 assert_eq!(uf.find(0).unwrap(), 0);
 
-let rep = uf.union(0, 1).unwrap();
-
-assert_eq!(rep, uf.find(1).unwrap());
+assert_eq!(uf.find(0).unwrap(), uf.find(1).unwrap());
+```
