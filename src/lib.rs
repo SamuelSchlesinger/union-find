@@ -99,11 +99,12 @@ impl UnionFind {
 
 #[cfg(test)]
 mod tests {
+    const SIZE: usize = 10000;
+
     use super::*;
 
     #[test]
     fn union_all() {
-        const SIZE: usize = 10000;
         let mut uf = UnionFind::new(SIZE);
         for i in 0..SIZE {
             uf.union(i, i + 1 % SIZE);
@@ -116,7 +117,6 @@ mod tests {
 
     #[test]
     fn union_none() {
-        const SIZE: usize = 10000;
         let mut uf = UnionFind::new(SIZE);
         let rep = uf.find(0).unwrap();
         for i in 1..SIZE {
@@ -126,7 +126,6 @@ mod tests {
 
     #[test]
     fn union_evens() {
-        const SIZE: usize = 10000;
         let mut uf = UnionFind::new(SIZE);
         for i in 0..SIZE {
             uf.union(2 * i, 2 * (i + 1) % SIZE);
