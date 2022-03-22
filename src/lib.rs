@@ -1,41 +1,53 @@
 pub struct UnionFind {
-    backing: Vec<(usize, usize)>,
+    backing: Vec<Element>,
+}
+
+#[derive(Clone, Copy, Debug)]
+struct Element {
+    parent: usize,
+    rank: usize,
 }
 
 impl UnionFind {
     pub fn new(size: usize) -> Self {
         UnionFind {
-            backing: (0..size).map(|i| (i, 0)).collect(),
+            backing: (0..size).map(|i| Element { parent: i, rank: 0 }).collect(),
         }
     }
 
     pub fn fresh(&mut self) -> usize {
         let fresh = self.backing.len();
-        self.backing.push((fresh, 0));
+        self.backing.push(Element {
+            parent: fresh,
+            rank: 0,
+        });
         fresh
     }
 
-    pub fn find(&mut self, element: usize) -> Option<usize> {
-        if element >= self.backing.len() {
+    pub fn find(&mut self, element_id: usize) -> Option<usize> {
+        if element_id >= self.backing.len() {
             None
         } else {
-            let mut current = element;
+            let mut current = element_id;
             loop {
-                let (parent, _parent_rank) = self.backing[element];
-                if parent == current {
+                let element = self.backing[element_id];
+                if element.parent == current {
                     break;
                 }
-                current = parent;
+                current = element.parent;
             }
             let rep = current;
-            current = element;
+            current = element_id;
             loop {
-                let (parent, _parent_rank) = self.backing[current];
-                if current == parent {
+                let element = self.backing[current];
+                if current == element.parent {
                     break;
                 }
-                self.backing[current] = (rep, 0);
-                current = parent;
+                self.backing[current] = Element {
+                    parent: rep,
+                    rank: element.rank,
+                };
+                current = element.parent;
             }
             Some(rep)
         }
@@ -52,15 +64,15 @@ impl UnionFind {
                 return Some(rep1);
             }
 
-            if self.backing[rep1].1 < self.backing[rep2].1 {
-                self.backing[rep1].0 = rep2;
+            if self.backing[rep1].rank < self.backing[rep2].rank {
+                self.backing[rep1].parent = rep2;
                 Some(rep2)
-            } else if self.backing[rep1].1 > self.backing[rep2].1 {
-                self.backing[rep2].0 = rep1;
+            } else if self.backing[rep1].rank > self.backing[rep2].rank {
+                self.backing[rep2].parent = rep1;
                 Some(rep1)
             } else {
-                self.backing[rep1].0 = rep2;
-                self.backing[rep2].1 = self.backing[rep2].1 + 1;
+                self.backing[rep1].parent = rep2;
+                self.backing[rep2].rank = self.backing[rep2].rank + 1;
                 Some(rep1)
             }
         }
